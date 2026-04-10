@@ -29,23 +29,23 @@ requirements:
   host:
     - python
     - pip
-    - nanobind
+    - nanobind 2.5.0
     - setuptools >=42
   run:
     - python
 
-tests:
-  - imports:
-        - mlx
-        - mlx.core
-  - source_files:
-        - python/
-  - requires:
-        - pip
-        - numpy
-  - comands:
-      - pip check
-      - python -m unittest discover python/tests
+test:
+  imports:
+    - mlx
+    - mlx.core
+  source_files:
+    - python/
+  requires:
+    - pip
+    - numpy
+  commands:
+    - pip check
+    - python -m unittest discover python/tests
 
 about:
   home: https://github.com/ml-explore/mlx
