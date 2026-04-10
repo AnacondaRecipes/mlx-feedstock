@@ -12,6 +12,7 @@ source:
   sha256: {{ sha256 }}
   patches:
     - 0001-Omit-visionOS-from-sources.patch
+    - 0002-use-conda-CMAKE_OSX_SYSROOT.patch
 
 build:
   number: 0

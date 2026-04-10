@@ -1,0 +1,42 @@
+From 94bb101e2fa8e99ef3591860b096d2704cdbfa96 Mon Sep 17 00:00:00 2001
+From: Eric Lundby <Eric.Lundby@gmail.com>
+Date: Fri, 10 Apr 2026 10:52:02 -0600
+Subject: [PATCH] use-conda-CMAKE_OSX_SYSROOT
+
+/usr/bin/xcrun -sdk macosx --show-sdk-version returns the wrong SDK version on CI.
+
+Use CMAKE_OSX_SYSROOT to get the correct SDK version.
+---
+ CMakeLists.txt | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7779e99..6287e41 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -107,11 +107,17 @@ if(MLX_BUILD_METAL)
+     add_compile_definitions(MLX_METAL_DEBUG)
+   endif()
+ 
+-  # Throw an error if xcrun not found
+-  execute_process(
+-    COMMAND zsh "-c" "/usr/bin/xcrun -sdk macosx --show-sdk-version"
+-    OUTPUT_VARIABLE MACOS_SDK_VERSION
+-    OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
++  if(CMAKE_OSX_SYSROOT)
++    get_filename_component(_mlx_sdk_name "${CMAKE_OSX_SYSROOT}" NAME)
++    string(REGEX REPLACE "^MacOSX([0-9]+\\.[0-9]+)\\.sdk$" "\\1"
++           MACOS_SDK_VERSION "${_mlx_sdk_name}")
++  else()
++    execute_process(
++      COMMAND /usr/bin/xcrun -sdk macosx --show-sdk-version
++      OUTPUT_VARIABLE MACOS_SDK_VERSION
++      OUTPUT_STRIP_TRAILING_WHITESPACE
++      COMMAND_ERROR_IS_FATAL ANY)
++  endif()
+ 
+   if(${MACOS_SDK_VERSION} LESS 14.0)
+     message(
+-- 
+2.50.1 (Apple Git-155)
+
