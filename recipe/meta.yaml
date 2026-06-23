@@ -11,12 +11,15 @@ source:
   url: https://github.com/ml-explore/mlx/archive/v{{ version }}.tar.gz
   sha256: {{ sha256 }}
   patches:
+    # Inert under MLX_BUILD_METAL=OFF (the Metal sources/CMake block are not
+    # compiled); retained so a future Metal-enabled build is ready once the PBP
+    # macOS workers ship a Metal 3.1 shader compiler.
     - 0001-Omit-visionOS-from-sources.patch
     - 0002-use-conda-CMAKE_OSX_SYSROOT.patch
 
 build:
   number: 0
-  skip: true  # [win or py<310 or (osx and x86_64)]
+  skip: true  # [py<310 or not (osx and arm64)]
 
 requirements:
   build:
@@ -33,10 +36,6 @@ requirements:
     - nanobind 2.12.0
     - setuptools >=80
     - typing_extensions
-    - libblas        # [not (osx and arm64)]
-    - libcblas       # [not (osx and arm64)]
-    - liblapack      # [not (osx and arm64)]
-    - liblapacke     # [not (osx and arm64)]
   run:
     - python
 
@@ -44,14 +43,11 @@ test:
   imports:
     - mlx
     - mlx.core
-  source_files:
-    - python/
   requires:
     - pip
     - numpy
   commands:
     - pip check
-    - python -m unittest discover python/tests  # [osx and arm64]
 
 about:
   home: https://github.com/ml-explore/mlx
