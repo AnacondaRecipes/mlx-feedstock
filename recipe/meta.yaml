@@ -36,7 +36,7 @@ requirements:
     # nanobind is vendored at build time via CMake FetchContent (GIT_TAG v2.12.0),
     # so it is intentionally NOT a host dep — pkgs/main has no py3.14 build of it.
     - setuptools >=80
-    - typing_extensions
+    - typing_extensions >=4.15.0
   run:
     - python
 
