@@ -1,0 +1,68 @@
+{% set name = "mlx" %}
+{% set version = "0.31.2" %}
+{% set sha256 = "bdb9b619f80962dd00c0bffb65e59c53f565c2b550f189a1467f8bc6089401ab" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # There are no sources on PyPI
+  url: https://github.com/ml-explore/mlx/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    # Inert under MLX_BUILD_METAL=OFF (the Metal sources/CMake block are not
+    # compiled); retained so a future Metal-enabled build is ready once the PBP
+    # macOS workers ship a Metal 3.1 shader compiler.
+    - 0001-Omit-visionOS-from-sources.patch
+    - 0002-use-conda-CMAKE_OSX_SYSROOT.patch
+
+build:
+  number: 0
+  skip: true  # [py<310 or not (osx and arm64)]
+
+requirements:
+  build:
+    # need python in the build section to properly build the extensions
+    - python
+    - {{ compiler('cxx') }}
+    - {{ compiler('c') }}
+    - {{ stdlib("c") }}
+    - cmake >=3.25
+    - ninja
+  host:
+    - python
+    - pip
+    # nanobind is vendored at build time via CMake FetchContent (GIT_TAG v2.12.0),
+    # so it is intentionally NOT a host dep — pkgs/main has no py3.14 build of it.
+    - setuptools >=80
+    - typing_extensions 4.15.0
+  run:
+    - python
+
+test:
+  imports:
+    - mlx
+    - mlx.core
+  requires:
+    - pip
+    - numpy
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/ml-explore/mlx
+  summary: An array framework for Apple silicon
+  description: |
+    MLX is an array framework for machine learning on Apple silicon, brought to
+    you by Apple machine learning research.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://ml-explore.github.io/mlx/build/html/index.html
+  dev_url: https://github.com/ml-explore/mlx
+
+extra:
+  recipe-maintainers:
+    - xhochy
+    - ngam

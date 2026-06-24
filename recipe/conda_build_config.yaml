@@ -1,4 +1,7 @@
+# Target macOS 13.3 — the minimum where Apple Accelerate's "new LAPACK" symbols
+# exist (mlx's CPU backend links them). This sets the deployment target and the
+# package's `__osx >=13.3` run floor, which the Ventura (13.x) PBP workers satisfy.
+# The 13.3 SDK is not installed on the workers, so build.sh repoints the build to
+# the 14.5 SDK (which ships the same new-LAPACK headers) — see recipe/build.sh.
 c_stdlib_version:          # [osx and arm64]
-  - "14.5"                 # [osx and arm64]
-MACOSX_SDK_VERSION:        # [osx and arm64]
-  - "14.5"                 # [osx and arm64]
+  - "13.3"                 # [osx and arm64]

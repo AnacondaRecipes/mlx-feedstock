@@ -1,25 +1,37 @@
-From 477bae63f7d1508f3a29711ae2c723704be332c2 Mon Sep 17 00:00:00 2001
+From ebe49a40c12acfea6562ee455918b2f3dc02777d Mon Sep 17 00:00:00 2001
 From: "Uwe L. Korn" <uwe.korn@quantco.com>
-Date: Wed, 27 Nov 2024 11:49:57 +0100
+Date: Tue, 23 Jun 2026 13:55:55 -0500
 Subject: [PATCH] Omit visionOS from sources
 
 ---
- mlx/backend/metal/device.cpp | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mlx/backend/metal/device.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/mlx/backend/metal/device.cpp b/mlx/backend/metal/device.cpp
-index 8f8a446..24ddb9e 100644
+index d678461..b8a4466 100644
 --- a/mlx/backend/metal/device.cpp
 +++ b/mlx/backend/metal/device.cpp
-@@ -25,9 +25,9 @@ constexpr const char* default_mtllib_path = METAL_PATH;
+@@ -35,9 +35,9 @@ constexpr const char* default_mtllib_path = METAL_PATH;
  
  auto get_metal_version() {
    auto get_metal_version_ = []() {
--    if (__builtin_available(macOS 15, iOS 18, tvOS 18, visionOS 2, *)) {
-+    if (__builtin_available(macOS 15, iOS 18, tvOS 18, *)) {
+-    if (__builtin_available(macOS 26, iOS 26, tvOS 26, visionOS 26, *)) {
++    if (__builtin_available(macOS 26, iOS 26, tvOS 26, *)) {
+       return MTL::LanguageVersion4_0;
+-    } else if (__builtin_available(macOS 15, iOS 18, tvOS 18, visionOS 2, *)) {
++    } else if (__builtin_available(macOS 15, iOS 18, tvOS 18, *)) {
        return MTL::LanguageVersion3_2;
--    } else if (__builtin_available(macOS 14, iOS 17, tvOS 17, visionOS 1, *)) {
-+    } else if (__builtin_available(macOS 14, iOS 17, tvOS 17, *)) {
-       return MTL::LanguageVersion3_1;
      } else {
-       return MTL::LanguageVersion3_0;
+       return MTL::LanguageVersion3_1;
+@@ -832,7 +832,7 @@ bool is_nax_available() {
+   auto _check_nax = []() {
+     bool can_use_nax = false;
+     if (__builtin_available(
+-            macOS 26.2, iOS 26.2, tvOS 26.2, visionOS 26.2, *)) {
++            macOS 26.2, iOS 26.2, tvOS 26.2, *)) {
+       can_use_nax = true;
+     }
+     auto& d = metal::device(mlx::core::Device::gpu);
+-- 
+2.50.1 (Apple Git-155)
+
