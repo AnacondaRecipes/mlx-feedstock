@@ -11,7 +11,7 @@ package:
 source:
   # There are no sources on PyPI
   url: https://github.com/ml-explore/mlx/archive/v${{ version }}.tar.gz
-  sha256: 448eefb3c9d4f42001e7e3236b2a33326a892dee520aaf4da60c2fa5c11182e2
+  sha256: 34fe1ec0e6baf886eee16c9a1d4c7bd26bbe74fe051225f0eb88a982fc9d2494
   patches:
     - 0001-Omit-visionOS-from-sources.patch
 
