@@ -17,6 +17,9 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DMLX_BUILD_METAL=OFF"
 # Repoint CONDA_BUILD_SYSROOT (and the -isysroot already baked into *FLAGS) from
 # the absent 13.3 SDK to 14.5, keeping the 13.3 deployment target intact.
 NEW_SDK="/Library/Developer/CommandLineTools/SDKs/MacOSX14.5.sdk"
+# CANARY (PKG-13634): fail fast and unambiguously if the worker AMI has
+# dropped the 14.5 SDK, instead of cascading into missing-header errors.
+test -d "${NEW_SDK}"
 OLD_SDK="${CONDA_BUILD_SYSROOT:-}"
 if [[ -n "${OLD_SDK}" && "${OLD_SDK}" != "${NEW_SDK}" ]]; then
   for v in CFLAGS CXXFLAGS CPPFLAGS LDFLAGS; do

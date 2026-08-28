@@ -18,8 +18,9 @@ source:
     - 0002-use-conda-CMAKE_OSX_SYSROOT.patch
 
 build:
-  number: 0
-  skip: true  # [py<310 or not (osx and arm64)]
+  number: 1
+  # CANARY (PKG-13634): narrowed to a single python to keep the probe graph small.
+  skip: true  # [py!=313 or not (osx and arm64)]
 
 requirements:
   build:

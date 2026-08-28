@@ -1,7 +1,15 @@
-# Target macOS 13.3 — the minimum where Apple Accelerate's "new LAPACK" symbols
-# exist (mlx's CPU backend links them). This sets the deployment target and the
-# package's `__osx >=13.3` run floor, which the Ventura (13.x) PBP workers satisfy.
-# The 13.3 SDK is not installed on the workers, so build.sh repoints the build to
-# the 14.5 SDK (which ships the same new-LAPACK headers) — see recipe/build.sh.
-c_stdlib_version:          # [osx and arm64]
-  - "13.3"                 # [osx and arm64]
+# CANARY (PKG-13634) — DO NOT MERGE.
+# Probe for the proposed distribution-wide macOS floor bump (12.1 -> 14.0):
+#   * build-time SDK  -> MacOSX14.5.sdk (repointed in build.sh; 14.0 SDK is not
+#     installed on the workers, so the floor and the SDK are deliberately decoupled)
+#   * deployment target / `__osx` run floor -> 14.0
+# Expected: the build task proves MacOSX14.5.sdk is present on the current
+# osx-arm64 AMI; the test task is expected to fail to solve, because the PBP
+# osx-arm64 workers report `__osx 13.7.5` (Ventura) and cannot satisfy
+# `__osx >=14.0`. The real values for mlx are 13.3 across the board.
+c_stdlib_version:            # [osx and arm64]
+  - "14.0"                   # [osx and arm64]
+MACOSX_DEPLOYMENT_TARGET:    # [osx and arm64]
+  - "14.0"                   # [osx and arm64]
+macos_min_version:           # [osx and arm64]
+  - "14.0"                   # [osx and arm64]
