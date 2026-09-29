@@ -1,9 +1,9 @@
 {% set name = "mlx" %}
-{% set version = "0.31.2" %}
-{% set sha256 = "bdb9b619f80962dd00c0bffb65e59c53f565c2b550f189a1467f8bc6089401ab" %}
+{% set version = "0.32.3" %}
+{% set sha256 = "4129039ddcb36cb860982b616c975a5b9b8e6d8fa97efa86335b4427c29c4b4b" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -29,12 +29,12 @@ requirements:
     - {{ compiler('c') }}
     - {{ stdlib("c") }}
     - cmake >=3.25
-    - ninja
+    - ninja-base
   host:
     - python
     - pip
-    # nanobind is vendored at build time via CMake FetchContent (GIT_TAG v2.12.0),
-    # so it is intentionally NOT a host dep — pkgs/main has no py3.14 build of it.
+    # nanobind is vendored at build time via CMake FetchContent (GIT_TAG v3.0.1),
+    # so it is intentionally NOT a host dep — pkgs/main only has nanobind 2.12.0.
     - setuptools >=80
     - typing_extensions 4.15.0
   run:
