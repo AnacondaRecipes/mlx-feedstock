@@ -7,36 +7,32 @@ Subject: [PATCH] use-conda-CMAKE_OSX_SYSROOT
 
 Use CMAKE_OSX_SYSROOT to get the correct SDK version.
 ---
- CMakeLists.txt | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ CMakeLists.txt |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7779e99..6287e41 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -107,11 +107,17 @@ if(MLX_BUILD_METAL)
-     add_compile_definitions(MLX_METAL_DEBUG)
-   endif()
+@@ -192,11 +192,18 @@ if(MLX_BUILD_METAL)
+       OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
+     message(STATUS "Building on macOS ${MACOS_VERSION}")
  
--  # Throw an error if xcrun not found
--  execute_process(
--    COMMAND zsh "-c" "/usr/bin/xcrun -sdk macosx --show-sdk-version"
--    OUTPUT_VARIABLE MACOS_SDK_VERSION
--    OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
-+  if(CMAKE_OSX_SYSROOT)
-+    get_filename_component(_mlx_sdk_name "${CMAKE_OSX_SYSROOT}" NAME)
-+    string(REGEX REPLACE "^MacOSX([0-9]+\\.[0-9]+)\\.sdk$" "\\1"
-+           MACOS_SDK_VERSION "${_mlx_sdk_name}")
-+  else()
-+    execute_process(
-+      COMMAND /usr/bin/xcrun -sdk macosx --show-sdk-version
-+      OUTPUT_VARIABLE MACOS_SDK_VERSION
-+      OUTPUT_STRIP_TRAILING_WHITESPACE
-+      COMMAND_ERROR_IS_FATAL ANY)
-+  endif()
- 
-   if(${MACOS_SDK_VERSION} LESS 14.0)
-     message(
--- 
-2.50.1 (Apple Git-155)
-
+-    # Get macOS SDK version.
+-    execute_process(
+-      COMMAND xcrun -sdk macosx --show-sdk-version
+-      OUTPUT_VARIABLE MACOS_SDK_VERSION
+-      OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
++    # Get macOS SDK version. Prefer the SDK conda selects via CMAKE_OSX_SYSROOT;
++    # `xcrun --show-sdk-version` reports the wrong SDK on CI.
++    if(CMAKE_OSX_SYSROOT)
++      get_filename_component(_mlx_sdk_name "${CMAKE_OSX_SYSROOT}" NAME)
++      string(REGEX REPLACE "^MacOSX([0-9]+\\.[0-9]+)\\.sdk$" "\\1"
++                           MACOS_SDK_VERSION "${_mlx_sdk_name}")
++    else()
++      execute_process(
++        COMMAND xcrun -sdk macosx --show-sdk-version
++        OUTPUT_VARIABLE MACOS_SDK_VERSION
++        OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
++    endif()
+     if(MACOS_SDK_VERSION VERSION_LESS 14.0)
+       message(
+         FATAL_ERROR
