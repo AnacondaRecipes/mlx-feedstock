@@ -18,7 +18,7 @@ source:
     - 0002-use-conda-CMAKE_OSX_SYSROOT.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<310 or not (osx and arm64)]
 
 requirements:
@@ -36,7 +36,7 @@ requirements:
     # nanobind is vendored at build time via CMake FetchContent (GIT_TAG v3.0.1),
     # so it is intentionally NOT a host dep — pkgs/main only has nanobind 2.12.0.
     - setuptools >=80
-    - typing_extensions 4.15.0
+    - typing_extensions 4.16.0
   run:
     - python
 
